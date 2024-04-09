@@ -1,4 +1,3 @@
-# ui.py
 
 import pygame
 import time

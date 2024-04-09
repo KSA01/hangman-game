@@ -1,4 +1,3 @@
-#main.py
 
 import game
 from screens import Screens
@@ -12,58 +11,8 @@ from storage import save_data, load_data
 
 pygame.init()
 
-'''def save_data(user, score, streak, reset=False):
-    if not reset:
-        data = load_data()  # Load existing data
-        if data is None:
-            data = []  # Initialize empty list if no data exists
-        
-        user_exists = False
-        for entry in data:
-            if entry["user"] == user:
-                user_exists = True
-                if score > entry["score"]:
-                    entry["score"] = score
-                if streak > entry["word-streak"]:
-                    entry["word-streak"] = streak
-                break  # Found the user, no need to continue
-        
-        if not user_exists:
-            new_data = {"user": user, "score": score, "word-streak": streak}
-            data.append(new_data)  # Add new user data
-        
-        with open("data/gamedata.json", "w") as json_file:
-            json.dump(data, json_file, indent=4)
-
-    # If the user chooses to reset their streaks
-    elif reset:
-        data = load_data()  # Load existing data
-        if data is None:
-            data = []  # Initialize empty list if no data exists
-        
-        for entry in data:
-            if entry["user"] == user:
-                entry["score"] = 0
-                entry["word-streak"] = 0
-
-        with open("data/gamedata.json", "w") as json_file:
-            json.dump(data, json_file, indent=4)
-
-def load_data():
-    try:
-        with open("data/gamedata.json", "r") as json_file:
-            try:
-                data = json.load(json_file)
-                return data
-            except json.JSONDecodeError:
-                return None
-    except FileNotFoundError:
-        return None'''
-
 def main():
-    #info = pygame.display.Info()
     screen = pygame.display.set_mode((ui.SCREEN_WIDTH, ui.SCREEN_HEIGHT), pygame.RESIZABLE | pygame.SRCALPHA, 32) # pygame screen
-    #screen = pygame.display.set_mode((info.current_w, info.current_h), pygame.RESIZABLE)
     pygame.display.set_caption("Hangman")
     clock = pygame.time.Clock()
     TIME_DURATION = 60 # 60 sec
@@ -76,43 +25,6 @@ def main():
     screens = Screens(screen) # in app game screens
 
     game.Init()
-
-    '''center_x = ui.SCREEN_WIDTH // 2
-    center_y = ui.SCREEN_HEIGHT // 2
-    bottom_y = ui.SCREEN_HEIGHT
-    right_x = ui.SCREEN_WIDTH
-
-    button_font = pygame.font.Font(None, 30)
-    input_font = pygame.font.Font(None, 30)
-    guess_font = pygame.font.Font(None, 50)
-    lives_font = pygame.font.Font(None, 50)
-    title_font = pygame.font.Font(None, 120)
-    chat_font = pygame.font.Font(None, 25)
-
-    stats_width = right_x / 4
-    stats_height = bottom_y / 3
-
-    input_box_rect = pygame.Rect((center_x - 300), (bottom_y * (5/6)), 100, 30)
-    title_rect = pygame.Rect((center_x) - (600 // 2), (bottom_y / 50), 600, 130)
-    menu_rect = pygame.Rect(20, 20, 100, 100)
-    quit_but_rect = pygame.Rect(right_x - 120, 20, 100, 100)
-    text_box_rect = pygame.Rect(center_x - (420 // 2), bottom_y - 50, 400, 50)
-    lives_box_rect = pygame.Rect(right_x - 180, 100, 170, 70)
-    incorrect_box_rect = pygame.Rect(right_x - 280, bottom_y - 50, 170, 40)
-    rules_button_rect = pygame.Rect(center_x - (150 // 2), center_y + 50, 150, 50)
-    button_rect = pygame.Rect(center_x - (150 // 2), center_y - (50 // 2), 150, 50)
-    stats_box_rect = pygame.Rect(right_x / 16, (bottom_y / 2) - (stats_height / 4), stats_width, stats_height)
-    stats_reset_button_rect = pygame.Rect(right_x / 16 + 100, bottom_y - (stats_height), 130, 30)
-    button_text = "Start Game!"
-    button_hover = False
-    mode_select = False
-    start_game = False
-    new_game = True
-    quit_screen = False
-    replay_menu = False
-    ensurance = False
-    display_rules = False
-    running = True'''
 
     input_text = ""
     name_input_text = ""
@@ -143,9 +55,6 @@ def main():
                             screens.custom_words = False
                         elif screens.start_game and not screens.ensurance:
                             screens.ensurance = True
-                    #elif screens.start_game and not screens.ensurance and screens.menu_rect.collidepoint(event.pos):
-                        #Goes back to main menu
-                        #screens.ensurance = True
                     elif not screens.start_game and not screens.quit_screen and not screens.display_rules and not screens.mode_select and screens.rules_button_rect.collidepoint(event.pos):
                         #Display the rules screen
                         screens.display_rules = True
@@ -177,7 +86,6 @@ def main():
                     name_input_text += event.unicode
 
 
-        #screen.fill(ui.WHITE)
         screen.blit(images.lobby_background, (0, 0))
 
         # Draw Home Screen

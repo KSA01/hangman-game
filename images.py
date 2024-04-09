@@ -18,8 +18,6 @@ class Images:
         self.load_background = pygame.transform.scale(self.load_background, (ui.SCREEN_WIDTH, ui.SCREEN_HEIGHT))
         self.lobby_background = pygame.image.load("images/lobby3.jpeg")
         self.lobby_background = pygame.transform.scale(self.lobby_background, (ui.SCREEN_WIDTH, ui.SCREEN_HEIGHT))
-        #self.current_theme = pygame.image.load("images/themes/theme2.jpg")
-        #self.current_theme = pygame.transform.scale(self.current_theme, (ui.SCREEN_WIDTH, ui.SCREEN_HEIGHT))
 
         # Loading Screen Background
         screen.blit(self.load_background, (0, 0))

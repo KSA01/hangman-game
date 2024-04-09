@@ -1,8 +1,8 @@
+
 import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.probability import FreqDist
 from textblob import Word as TextWord
-
 
 class WordDifficulty:
     """Estimate the difficulty level of a given English word.
@@ -20,7 +20,7 @@ class WordDifficulty:
 
     def __init__(self):
         """Initialize the WordDifficulty class and download required NLTK resources."""
-        #self.download_corpora() # Only for the first time
+        self.download_corpora() # Only for the first time
         self.stopwords = set(nltk.corpus.stopwords.words('english'))
         self.words = set(nltk.corpus.words.words())
         self.names = set(nltk.corpus.names.words())

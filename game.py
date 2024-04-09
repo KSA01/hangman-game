@@ -1,9 +1,8 @@
-#game.py
 
 import pygame
 import random
 import ui
-#from analyzer.a01_word_difficulty import WordDifficulty
+from storage import load_file
 from wordanalyzer import WordDifficulty
 
 center_x = ui.SCREEN_WIDTH // 2
@@ -22,13 +21,7 @@ def Init():
     global word_difficulty
     word_difficulty = WordDifficulty()
 
-def load_file(file_path):
-    with open(file_path, 'r') as file:
-        words = file.read().splitlines()
-    return words
-
 def choose_word(file_path):
-    #words = ["python", "hangman", "stick", "interface", "game", "figure"]
     words = load_file(file_path)
     selected_word = ""
     while len(selected_word) <= 1:
@@ -56,24 +49,11 @@ def hangman(lives, new_game, user_input, mode):
     global guesses
     global incorrect_guesses
     global word_difficulty
-    #global life_count
 
     attempts = lives  # Set the maximum number of incorrect attempts
-
-    '''if mode == "Med" or mode == "Hard":
-        life_count = 7
-    elif mode == "Easy":
-        life_count = 10'''
     
     if new_game:
         ui.text_list = ["Welcome to Hangman!"]
-        #print("\nWelcome to Hangman!")
-        '''if mode == "Easy":
-            file_path = "words/words_e.txt"
-        elif mode == "Med":
-            file_path = "words/words_m.txt"
-        elif mode == "Hard":
-            file_path = "words/words_h.txt"'''
         file_path = "words/words.txt"
         difficulty = None
         while difficulty != mode:
@@ -89,7 +69,6 @@ def hangman(lives, new_game, user_input, mode):
     while True:
         if attempts == 0:
             ui.text_list = ["Game over! Your score is now reset.", f"The word was: {str(word_to_guess)}"]
-            #print("Game over! Your score is now reset. The word was:", word_to_guess)
             score = 0
             return False
 
@@ -98,11 +77,9 @@ def hangman(lives, new_game, user_input, mode):
             if not new_game:
                 prev_guesses = guessed_letters
             pass
-            #print(f"\nWord: {current_display} \t\t{len(word_to_guess)} letters")
         
         if current_display.replace(" ", "") == word_to_guess:
             ui.text_list = ["Congratulations! You guessed the word:", f"{str(word_to_guess)}"]
-            #print("Congratulations! You guessed the word:", word_to_guess)
             if mode == "Easy":
                 score += (1*lives)
             elif mode == "Med":
@@ -111,21 +88,17 @@ def hangman(lives, new_game, user_input, mode):
             else:
                 score += (3*lives)
             ui.text_list.append(f"Your current score is now: {score} pt(s)")
-            #print(f"Your current score is now: {score} pt(s)")
             return "win", current_display
 
-        #guess = input("\nEnter a letter: ").lower()
         if len(user_input) > 0:
             guess = user_input.lower()
 
             if len(guess) != 1 or not guess.isalpha(): # if statement for invalid inputs
                 ui.text_list.append("Please enter a valid single letter.")
-                #print("Please enter a valid single letter.")
                 return attempts, current_display
 
             if guess in guessed_letters: # if statement for if the input is repeated
                 ui.text_list.append("You've already guessed that letter. Try again.")
-                #print("You've already guessed that letter. Try again.")
                 return attempts, current_display
 
             guessed_letters.append(guess)
@@ -133,7 +106,6 @@ def hangman(lives, new_game, user_input, mode):
             if guess not in word_to_guess: # If an attempted guess is wrong
                 attempts -= 1
                 ui.text_list.append(f"Incorrect! Lives remaining: {str(attempts)}")
-                #print("Incorrect! Lives remaining:", attempts)
                 incorrect_guesses.append(guess)
                 return attempts, current_display
             
@@ -156,8 +128,6 @@ def draw_hangman(screen, lives, mode, background):
     elif mode == "Easy":
         life_count = 10
 
-    # Draw background
-    #screen.fill((255, 255, 255))
     screen.blit(background, (0, 0))  
 
     # Draw the hangman's stand
@@ -211,8 +181,6 @@ def draw_victory_hangman(screen):
     pygame.draw.circle(screen, "white", [center_x + 20, bottom_y - 340], 4) # Right Eye
     pygame.draw.circle(screen, "white", [center_x, bottom_y - 305], 10, 4) # Mouth
 
-    #pygame.display.flip() # Updates the display
-
 def draw_stand(screen):
     global bottom_y
     global right_x
@@ -233,5 +201,3 @@ def draw_stand(screen):
 
     # Draw the rope
     pygame.draw.line(screen, rope_color, (center_x, bottom_y - 560), (center_x, bottom_y - 475), 7)
-
-    #pygame.display.flip()  # Update the display

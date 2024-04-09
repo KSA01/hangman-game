@@ -108,7 +108,6 @@ class Screens:
         ui.draw_input_box(self.screen, name_input_box_rect, name_input_text, self.input_font)
 
         # Draw Player Stats Box
-        #player_data = load_data()
         high_score = 0
         high_streak = 0
         if player_data:
