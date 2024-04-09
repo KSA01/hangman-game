@@ -1,4 +1,3 @@
-
 import nltk
 from nltk.stem import WordNetLemmatizer
 from nltk.probability import FreqDist
@@ -21,6 +20,7 @@ class WordDifficulty:
 
     def __init__(self):
         """Initialize the WordDifficulty class and download required NLTK resources."""
+        #self.download_corpora() # Only for the first time
         self.stopwords = set(nltk.corpus.stopwords.words('english'))
         self.words = set(nltk.corpus.words.words())
         self.names = set(nltk.corpus.names.words())
@@ -97,11 +97,11 @@ class WordDifficulty:
                 sum_eval = max(sum_eval, value_base) if sum_eval else value_base
         if sum_eval is None:
             return "unclassified"
-        if sum_eval < 20:
-            return "difficult"
-        if sum_eval < 110:
-            return "moderate"
-        return "easy"
+        if sum_eval < 30: # Can be adjusted - 0 is hardest limit (20)
+            return "Hard"
+        if sum_eval < 120: # (110)
+            return "Med"
+        return "Easy"
 
     def score_word_difficulty(self, word):
         """Estimate the difficulty of a word based on its usage frequency.

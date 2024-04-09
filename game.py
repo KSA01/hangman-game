@@ -3,7 +3,8 @@
 import pygame
 import random
 import ui
-from analyzer.a01_word_difficulty import WordDifficulty
+#from analyzer.a01_word_difficulty import WordDifficulty
+from wordanalyzer import WordDifficulty
 
 center_x = ui.SCREEN_WIDTH // 2
 center_y = ui.SCREEN_HEIGHT // 2
@@ -75,9 +76,9 @@ def hangman(lives, new_game, user_input, mode):
             file_path = "words/words_h.txt"'''
         file_path = "words/words.txt"
         difficulty = None
-        #while difficulty != mode:
-        new_word = choose_word(file_path)
-            #difficulty = word_difficulty.evaluate_word_difficulty(new_word)
+        while difficulty != mode:
+            new_word = choose_word(file_path)
+            difficulty = word_difficulty.evaluate_word_difficulty(new_word)
         guesses = []
         incorrect_guesses = []
 

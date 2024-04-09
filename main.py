@@ -75,7 +75,7 @@ def main():
 
     screens = Screens(screen) # in app game screens
 
-    #game.Init()
+    game.Init()
 
     '''center_x = ui.SCREEN_WIDTH // 2
     center_y = ui.SCREEN_HEIGHT // 2
