@@ -1,8 +1,10 @@
 
 import nltk
+from nltk.corpus import stopwords, words, names, wordnet, movie_reviews, reuters, brown, gutenberg, webtext, nps_chat, inaugural
 from nltk.stem import WordNetLemmatizer
 from nltk.probability import FreqDist
 from textblob import Word as TextWord
+import pickle
 
 class WordDifficulty:
     """Estimate the difficulty level of a given English word.
@@ -19,58 +21,55 @@ class WordDifficulty:
     """
 
     def __init__(self):
-        """Initialize the WordDifficulty class and download required NLTK resources."""
-        self.download_corpora() # Only for the first time
-        self.stopwords = set(nltk.corpus.stopwords.words('english'))
-        self.words = set(nltk.corpus.words.words())
-        self.names = set(nltk.corpus.names.words())
+        self.load_cached_resources()
 
-        all_synsets = list(nltk.corpus.wordnet.all_synsets())
-        all_wordnet_words = []
-        for synset in all_synsets:
-            all_wordnet_words.extend(synset.lemma_names())
-        self.wordnet_words = set(all_wordnet_words)
+    def load_cached_resources(self):
+        try:
+            with open('nltk_resources.pkl', 'rb') as f:
+                cached_data = pickle.load(f)
+                self.stopwords = cached_data['stopwords']
+                self.words = cached_data['words']
+                self.names = cached_data['names']
+                self.wordnet_words = cached_data['wordnet_words']
+                self.word_freq = cached_data['word_freq']
+                self.lemmatizer = cached_data['lemmatizer']
+        except FileNotFoundError:
+            # Initialize resources if cache file doesn't exist
+            self.initialize_resources()
 
+    def initialize_resources(self):
+        # Initialization logic for NLTK resources
+        self.stopwords = set(stopwords.words('english'))
+        self.words = set(words.words())
+        self.names = set(names.words())
+        self.wordnet_words = set(wordnet.words())
         self.word_freq = {
-            "words": FreqDist(nltk.corpus.words.words()),
-            "wordnet_words": FreqDist(all_wordnet_words),
-
-            "movie_reviews": FreqDist(nltk.corpus.movie_reviews.words()),
-            "reuters": FreqDist(nltk.corpus.reuters.words()),
-            "brown": FreqDist(nltk.corpus.brown.words()),
-            "gutenberg": FreqDist(nltk.corpus.gutenberg.words()),
-            "webtext": FreqDist(nltk.corpus.webtext.words()),
-            "nps_chat": FreqDist(nltk.corpus.nps_chat.words()),
-            "inaugural": FreqDist(nltk.corpus.inaugural.words()),
+            "words": FreqDist(words.words()),
+            "wordnet_words": FreqDist(wordnet.words()),
+            
+            "movie_reviews": FreqDist(movie_reviews.words()),
+            "reuters": FreqDist(reuters.words()),
+            "brown": FreqDist(brown.words()),
+            "gutenberg": FreqDist(gutenberg.words()),
+            "webtext": FreqDist(webtext.words()),
+            "nps_chat": FreqDist(nps_chat.words()),
+            "inaugural": FreqDist(inaugural.words()),
         }
         self.lemmatizer = WordNetLemmatizer()
+        # Cache the initialized resources
+        self.cache_resources()
 
-    def download_corpora(self):
-        """ Download essential NLTK corpora for natural language processing tasks.
-
-        This function downloads the following NLTK corpora:
-        - 'stopwords': Common stopwords in English.
-        - 'words': A list of common English words.
-        - 'reuters': Reuters news corpus.
-        - 'brown': Brown corpus, a general corpus of American English.
-        - 'gutenberg': Gutenberg corpus containing public domain books.
-        - 'names': A list of names.
-        - 'webtext': Web text corpus, a collection of text from web pages.
-        - 'nps_chat': Chat logs from the NPS Chat corpus.
-        - 'inaugural': Inaugural addresses of U.S. presidents
-
-        Usage:
-        download_corpora()
-        """
-        nltk.download('stopwords')
-        nltk.download('words')
-        nltk.download('reuters')
-        nltk.download('brown')
-        nltk.download('gutenberg')
-        nltk.download('names')
-        nltk.download('webtext')
-        nltk.download('nps_chat')
-        nltk.download('inaugural')
+    def cache_resources(self):
+        cached_data = {
+            'stopwords': self.stopwords,
+            'words': self.words,
+            'names': self.names,
+            'wordnet_words': self.wordnet_words,
+            'word_freq': self.word_freq,
+            'lemmatizer': self.lemmatizer
+        }
+        with open('nltk_resources.pkl', 'wb') as f:
+            pickle.dump(cached_data, f)
 
     def evaluate_word_difficulty(self, word):
         """Estimate the difficulty level of a word.

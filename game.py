@@ -17,7 +17,7 @@ new_word = None
 guesses = []
 incorrect_guesses = []
 
-def Init():
+def Init(): # Initializes the word difficulty analyzer at startup
     global word_difficulty
     word_difficulty = WordDifficulty()
 

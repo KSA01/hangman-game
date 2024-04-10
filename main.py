@@ -24,7 +24,7 @@ def main():
 
     screens = Screens(screen) # in app game screens
 
-    game.Init()
+    game.Init() # Initializes the word difficulty analyzer at startup
 
     input_text = ""
     name_input_text = ""
@@ -171,11 +171,11 @@ def main():
                         continue
 
             if screens.new_game:
-                # Start the timer
-                timer.start_timer()
                 lives, display = game.hangman(lives, screens.new_game, "", mode)
                 word_box_width = len(display) * 10 + 80
                 screens.text_box_rect = pygame.Rect(screens.center_x - (word_box_width // 2), screens.bottom_y - 50, word_box_width, 50)
+                # Start the timer
+                timer.start_timer() # Starts the timer after the hangman games loads in case of lag
                 screens.new_game = False
 
             if event.type == pygame.KEYDOWN and not screens.ensurance:
