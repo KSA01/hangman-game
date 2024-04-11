@@ -7,7 +7,7 @@ import sys
 import time
 from images import Images
 from timer import Timer
-from storage import save_data, load_data
+from storage import save_data, load_data, del_custom_words
 
 pygame.init()
 
@@ -35,8 +35,9 @@ def main():
     while screens.running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                screens.running = False
                 save_data(user_name, game.score, word_streak)
+                del_custom_words(screens.file_path, screens.words_entered_list)
+                screens.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     if not screens.start_game and not screens.quit_screen and not screens.mode_select and screens.button_rect.collidepoint(event.pos):
@@ -55,12 +56,15 @@ def main():
                             screens.custom_words = False
                         elif screens.start_game and not screens.ensurance:
                             screens.ensurance = True
-                    elif not screens.start_game and not screens.quit_screen and not screens.display_rules and not screens.mode_select and screens.rules_button_rect.collidepoint(event.pos):
+                    elif not screens.start_game and not screens.quit_screen and not screens.display_rules and not screens.themes and not screens.custom_words and not screens.mode_select and screens.rules_button_rect.collidepoint(event.pos):
                         #Display the rules screen
                         screens.display_rules = True
-                    elif not screens.start_game and not screens.quit_screen and not screens.themes and not screens.mode_select and screens.theme_button_rect.collidepoint(event.pos):
-                        #Display the rules screen
+                    elif not screens.start_game and not screens.quit_screen and not screens.display_rules and not screens.themes and not screens.custom_words and not screens.mode_select and screens.theme_button_rect.collidepoint(event.pos):
+                        #Display the themes screen
                         screens.themes = True
+                    elif not screens.start_game and not screens.quit_screen and not screens.display_rules and not screens.themes and not screens.custom_words and not screens.mode_select and screens.custom_words_button_rect.collidepoint(event.pos):
+                        #Display the custom words screen
+                        screens.custom_words = True
                     elif not screens.quit_screen and not screens.start_game and screens.quit_but_rect.collidepoint(event.pos):
                         #Goes to quit menu
                         screens.quit_screen = True
@@ -82,6 +86,8 @@ def main():
                         name_input_text = ""
                 elif screens.start_game:
                     input_text += event.unicode
+                elif screens.custom_words:
+                    screens.custom_word_input_text += event.unicode
                 else:
                     name_input_text += event.unicode
 
@@ -89,9 +95,9 @@ def main():
         screen.blit(images.lobby_background, (0, 0))
 
         # Draw Home Screen
-        if not screens.start_game and not screens.mode_select and not screens.quit_screen and not screens.display_rules:
-            player_data = load_data()
-            screens.homeScreen(user_name, name_input_text, player_data)
+        if not screens.start_game and not screens.mode_select and not screens.quit_screen and not screens.display_rules and not screens.themes and not screens.custom_words:
+            #player_data = load_data()
+            screens.homeScreen(user_name, name_input_text)
 
         # Display Quit Screen from Home
         if screens.quit_screen:
@@ -108,7 +114,7 @@ def main():
 
         # Display custom word addition menu
         if screens.custom_words and not screens.mode_select and not screens.replay_menu and not screens.quit_screen:
-            screens.customWordsScreen()
+            screens.customWordsScreen(event)
 
         # Display the replay menu
         if screens.replay_menu:
@@ -143,7 +149,7 @@ def main():
                         mode = "Hard"
                         timer.TIMER_DURATION = 30
                     
-                    time.sleep(0.1)
+                    time.sleep(0.05)
 
         if screens.start_game and not screens.replay_menu:
             screens.gameScreen(lives, input_text, display, mode, images.current_theme)

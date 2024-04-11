@@ -24,7 +24,7 @@ def Init(): # Initializes the word difficulty analyzer at startup
 def choose_word(file_path):
     words = load_file(file_path)
     selected_word = ""
-    while len(selected_word) <= 1:
+    while len(selected_word) < 1: # Checks to make sure chosen word is greater than 1
         selected_word = random.choice(words)
         selected_word = selected_word.replace(" ", "-")
     return selected_word

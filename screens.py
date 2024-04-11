@@ -2,7 +2,8 @@
 import pygame
 import ui
 import game
-from storage import save_data, load_data
+import time
+from storage import save_data, load_data, add_custom_words, del_custom_words
 
 class Screens:
     def __init__(self, screen):
@@ -36,6 +37,11 @@ class Screens:
 
         self.rules_width = self.right_x / 4
         self.rules_height = self.bottom_y / 2
+
+        self.custom_words_list = []
+        self.words_entered_list = []
+        self.custom_word_input_text = ""
+        self.file_path = "words/words.txt"
 
         self.input_box_rect = pygame.Rect((self.center_x - 300), (self.bottom_y * (5/6)), 100, 30)
         self.title_rect = pygame.Rect((self.center_x) - (600 // 2), (self.bottom_y / 50), 600, 130)
@@ -74,7 +80,11 @@ class Screens:
         self.button_rect_cont = pygame.Rect(self.center_x - 120, self.center_y - (50 // 2), 100, 50)
         self.button_rect_dont = pygame.Rect(self.center_x + 20, self.center_y - (50 // 2), 100, 50)
 
-    def homeScreen(self, user_name, name_input_text, player_data):
+        self.words_entered_box_rect = pygame.Rect(self.right_x / 16, (self.bottom_y / 2) - (self.stats_height / 4), self.stats_width, self.stats_height)
+        self.words_entered_reset_button_rect = pygame.Rect(self.right_x / 16 + 100, self.bottom_y - (self.stats_height) + 10, 130, 30)
+        self.words_confirm_rect = pygame.Rect(self.center_x - (150 // 2), self.center_y + 100, 150, 50)
+
+    def homeScreen(self, user_name, name_input_text):
         # Draw Start Screen Title
         ui.draw_text_box(self.screen, self.welc_title_rect, "Welcome to Hangman!", self.title_font)
 
@@ -108,6 +118,7 @@ class Screens:
         ui.draw_input_box(self.screen, name_input_box_rect, name_input_text, self.input_font)
 
         # Draw Player Stats Box
+        player_data = load_data()
         high_score = 0
         high_streak = 0
         if player_data:
@@ -133,6 +144,7 @@ class Screens:
             if event.button == 1:
                 if self.button_rect_yes.collidepoint(event.pos):
                     save_data(user_name, game.score, word_streak)
+                    del_custom_words(self.file_path, self.words_entered_list)
                     self.running = False
                     return
                 elif self.button_rect_no.collidepoint(event.pos):
@@ -141,6 +153,7 @@ class Screens:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN and not self.start_game: # Enter key
                     save_data(user_name, game.score, word_streak)
+                    del_custom_words(self.file_path, self.words_entered_list)
                     self.running = False
                     return
                 elif event.key == pygame.K_ESCAPE and not self.start_game: # Escape key
@@ -189,7 +202,7 @@ class Screens:
         ui.draw_multiline_text_box(self.screen, self.dir_box_rect, "Game Directions", dir_list, self.lives_font, self.chat_font)
 
     def themesScreen(self, event, images):
-        # Draw Start Screen Title
+        # Draw Screen Title
         ui.draw_text_box(self.screen, self.welc_title_rect, "Theme Selection", self.title_font)
         
         # Draw menu button
@@ -219,8 +232,60 @@ class Screens:
                     if rect.collidepoint(event.pos):
                         images.changeTheme(key)
 
-    def customWordsScreen(self):
-        pass
+    def customWordsScreen(self, event):
+        # Draw Screen Title
+        ui.draw_text_box(self.screen, self.welc_title_rect, "Add Custom Words", self.title_font)
+        
+        # Draw menu button
+        button_hover_menu = self.menu_rect.collidepoint(pygame.mouse.get_pos())
+        ui.draw_button(self.screen, self.menu_rect, "Menu", self.lives_font, button_hover_menu)
+
+        # Draw confirm button
+        button_hover_words_confirm = self.words_confirm_rect.collidepoint(pygame.mouse.get_pos())
+        ui.draw_button(self.screen, self.words_confirm_rect, "Confirm Words", self.button_font, button_hover_words_confirm)
+
+        if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    self.custom_word_input_text = self.custom_word_input_text[:-1]
+                elif event.key == pygame.K_RETURN:
+                    # Process user input
+                    if self.custom_word_input_text:
+                        self.custom_word_input_text = self.custom_word_input_text.rstrip('\r')  # Strip out carriage return character
+                        self.custom_words_list.append(self.custom_word_input_text.lower())
+                        self.custom_word_input_text = ""
+                else:
+                    self.custom_word_input_text += event.unicode
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if self.words_entered_reset_button_rect.collidepoint(event.pos):
+                    del_custom_words(self.file_path, self.words_entered_list)
+                    self.words_entered_list = []
+                    self.custom_words_list = []
+                elif self.words_entered_list and self.words_confirm_rect.collidepoint(event.pos):
+                    add_custom_words(self.file_path, self.words_entered_list)
+                    time.sleep(0.1)
+                    self.custom_words = False
+
+        # Draw Custom Words Entry Box
+        custom_word_box_width = self.right_x / 4
+        custom_word_box_height = self.bottom_y / 3
+        custom_word_input_box_rect = pygame.Rect(self.right_x - (custom_word_box_width - 20), (self.bottom_y*2/3 + 20) - (custom_word_box_height / 4), 100, 30)
+        custom_word_box_rect = pygame.Rect(self.right_x - (custom_word_box_width*1.3), (self.bottom_y / 2) - (custom_word_box_height / 4), custom_word_box_width, custom_word_box_height)
+        custom_word_box_list = ["Only enter 1 word at a time", "Please enter your custom words below", "Once you have ensured the spelling is", "correct, hit enter and they will", "appear on the left"]
+        ui.draw_multiline_text_box(self.screen, custom_word_box_rect, "Enter a Custom Word", custom_word_box_list, self.lives_font, self.chat_font)
+        ui.draw_input_box(self.screen, custom_word_input_box_rect, self.custom_word_input_text, self.input_font)
+
+        # Draw Custom Words Entered Box
+        if self.custom_words_list and len(self.custom_words_list) <= 8:
+            self.words_entered_list = []
+            for i in range(len(self.custom_words_list)):
+                self.words_entered_list.append(self.custom_words_list[i])
+        ui.draw_multiline_text_box(self.screen, self.words_entered_box_rect, "Current Words Entered", self.words_entered_list, self.lives_font, self.chat_font)
+
+        # Draw Stats Reset Button
+        button_hover_words_entered_reset = self.words_entered_reset_button_rect.collidepoint(pygame.mouse.get_pos())
+        ui.draw_button(self.screen, self.words_entered_reset_button_rect, "Reset", self.button_font, button_hover_words_entered_reset)
 
     def replayScreen(self, event):
         ui.draw_text_box(self.screen, self.replay_rect, "Do you wish to play again?", self.lives_font)
