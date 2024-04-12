@@ -23,22 +23,24 @@ def add_custom_words(file_path, words_list):
 
 def del_custom_words(file_path, words_list):
     global counter
-    with open(file_path, 'r+') as file:
-        lines = file.readlines()
-        file.seek(0)  # Moves the file pointer to the beginning
-        for line in lines:
-            if line.strip() not in words_list:
-                file.write(line)  # Write the line back to the file if it's not in the list
-        file.truncate()  # Truncate the file to remove any remaining content after the updated lines
-        # Removed empty line at the end
-        file.seek(0, 2)  # Move to the end of the file
-        pos = file.tell() - 1  # Start at the end of the file
-        while pos > 0 and file.read(1) != "\n":  # Move backwards until a newline is found
-            pos -= 1
-            file.seek(pos, 0)
-        if pos > 0:
-            file.seek(pos, 0)
-            file.truncate()
+    if counter != 0:
+        with open(file_path, 'r+') as file:
+            lines = file.readlines()
+            file.seek(0)  # Moves the file pointer to the beginning
+            for line in lines:
+                if line.strip() not in words_list:
+                    file.write(line)  # Write the line back to the file if it's not in the list
+            file.truncate()  # Truncate the file to remove any remaining content after the updated lines
+            # Removed empty line at the end
+            file.seek(0, 2)  # Move to the end of the file
+            pos = file.tell() - 1  # Start at the end of the file
+            while pos > 0 and file.read(1) != "\n":  # Move backwards until a newline is found
+                pos -= 1
+                file.seek(pos, 0)
+            if pos > 0:
+                file.seek(pos, 0)
+                file.truncate()
+        counter = 0
 
 def save_data(user, score, streak, reset=False):
     if not reset:
