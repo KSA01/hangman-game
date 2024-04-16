@@ -177,9 +177,10 @@ def draw_victory_hangman(screen):
     pygame.draw.line(screen, "blue", [center_x, bottom_y - 250], [center_x + 80, bottom_y - 280], 4) # Right Arm
     pygame.draw.line(screen, "blue", [center_x, bottom_y - 170], [center_x - 30, bottom_y - 70], 4) # Left Leg
     pygame.draw.line(screen, "blue", [center_x, bottom_y - 170], [center_x + 30, bottom_y - 70], 4) # Right Leg
-    pygame.draw.circle(screen, "white", [center_x - 15, bottom_y - 340], 4) # Left Eye
+    pygame.draw.circle(screen, "white", [center_x - 20, bottom_y - 340], 4) # Left Eye
     pygame.draw.circle(screen, "white", [center_x + 20, bottom_y - 340], 4) # Right Eye
-    pygame.draw.circle(screen, "white", [center_x, bottom_y - 305], 10, 4) # Mouth
+    pygame.draw.circle(screen, "white", [center_x, bottom_y - 305], 10) # Mouth
+    pygame.draw.rect(screen, "blue", [(center_x - 10), (bottom_y - 315), 20, 10]) # Mouth cover
 
 def draw_stand(screen):
     global bottom_y
