@@ -3,7 +3,10 @@ import pygame
 import ui
 import game
 import time
-from storage import save_data, load_data, add_custom_words, del_custom_words
+from storage import save_data, load_data, add_custom_words, del_custom_words, get_custom_words
+from wordanalyzer import WordDifficulty
+
+word_difficulty = WordDifficulty()
 
 class Screens:
     def __init__(self, screen):
@@ -39,7 +42,11 @@ class Screens:
         self.rules_height = self.bottom_y / 2
 
         self.custom_words_list = []
-        self.words_entered_list = []
+        added_words = get_custom_words()
+        if added_words:
+            for word in added_words:
+                self.custom_words_list.append(word)
+        self.words_entered_dict = {}
         self.custom_word_input_text = ""
         self.file_path = "words/words.txt"
 
@@ -111,7 +118,7 @@ class Screens:
         # Draw User Name Entry Box
         name_box_width = self.right_x / 4
         name_box_height = self.bottom_y / 3
-        name_input_box_rect = pygame.Rect(self.right_x - (name_box_width - 20), (self.bottom_y*2/3 + 20) - (name_box_height / 4), 100, 30)
+        name_input_box_rect = pygame.Rect(self.right_x - (name_box_width + 10), (self.bottom_y*2/3 + 20) - (name_box_height / 4), 150, 30)
         name_box_rect = pygame.Rect(self.right_x - (name_box_width*1.3), (self.bottom_y / 2) - (name_box_height / 4), name_box_width, name_box_height)
         name_box_list = ["", "Current User Name is: ", f"{user_name}", "", "Enter a User Name Below"]
         ui.draw_multiline_text_box(self.screen, name_box_rect, "User Name", name_box_list, self.lives_font, self.chat_font)
@@ -144,7 +151,6 @@ class Screens:
             if event.button == 1:
                 if self.button_rect_yes.collidepoint(event.pos):
                     save_data(user_name, game.score, word_streak)
-                    del_custom_words(self.file_path, self.words_entered_list)
                     self.running = False
                     return
                 elif self.button_rect_no.collidepoint(event.pos):
@@ -153,7 +159,6 @@ class Screens:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN and not self.start_game: # Enter key
                     save_data(user_name, game.score, word_streak)
-                    del_custom_words(self.file_path, self.words_entered_list)
                     self.running = False
                     return
                 elif event.key == pygame.K_ESCAPE and not self.start_game: # Escape key
@@ -175,7 +180,8 @@ class Screens:
                         "If you also exit the game your score", "will be reset when you return",
                         "However, the game will save your", "highest score to your player stats",
                         "The game will also save the most", "amount of words you guess correctly", 
-                        "consecutively to your player stats too"
+                        "consecutively to your player stats too",
+                        "You may add custom words to the game", "but you are limited to 8 added words"
                         ]
         ui.draw_multiline_text_box(self.screen, self.rules_box_rect, "Hangman Rules", rules_list, self.lives_font, self.chat_font)
 
@@ -192,12 +198,12 @@ class Screens:
         ui.draw_multiline_text_box(self.screen, self.howto_box_rect, "How to Play", howto_list, self.lives_font, self.chat_font)
 
         # Directions
-        dir_list = ["Easy", "You have 10 lives/guesses to guess", "the word correctly",
+        dir_list = ["Easy", "You have 10 lives and 60 seconds", "to guess the word correctly",
                     "Your final score is your", "remaining guesses with no multiplier",
-                    "Medium", "You have 7 lives/guesses to guess", "the word correctly",
-                    "Your final score is your", "remaining guesses times 2",
-                    "Hard", "You have 7 lives/guesses to guess", "the word correctly",
-                    "Your final score is your", "remaining guesses times 3"
+                    "Medium", "You have 7 lives and 45 seconds", "to guess the word correctly",
+                    "Your final score is your", "remaining guesses times 2x",
+                    "Hard", "You have 7 lives and 30 seconds", "to guess the word correctly",
+                    "Your final score is your", "remaining guesses times 3x"
                     ]
         ui.draw_multiline_text_box(self.screen, self.dir_box_rect, "Game Directions", dir_list, self.lives_font, self.chat_font)
 
@@ -259,29 +265,33 @@ class Screens:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if self.words_entered_reset_button_rect.collidepoint(event.pos):
-                    del_custom_words(self.file_path, self.words_entered_list)
-                    self.words_entered_list = []
+                    del_custom_words(self.file_path, self.words_entered_dict)
+                    self.words_entered_dict = []
                     self.custom_words_list = []
-                elif self.words_entered_list and self.words_confirm_rect.collidepoint(event.pos):
-                    add_custom_words(self.file_path, self.words_entered_list)
+                elif self.words_entered_dict and self.words_confirm_rect.collidepoint(event.pos):
+                    add_custom_words(self.file_path, self.words_entered_dict)
+                    time.sleep(0.1)
+                    self.custom_words = False
+                elif not self.words_entered_dict and self.words_confirm_rect.collidepoint(event.pos):
                     time.sleep(0.1)
                     self.custom_words = False
 
         # Draw Custom Words Entry Box
         custom_word_box_width = self.right_x / 4
         custom_word_box_height = self.bottom_y / 3
-        custom_word_input_box_rect = pygame.Rect(self.right_x - (custom_word_box_width - 20), (self.bottom_y*2/3 + 20) - (custom_word_box_height / 4), 100, 30)
+        custom_word_input_box_rect = pygame.Rect(self.right_x - (custom_word_box_width + 30), (self.bottom_y*2/3 + 60) - (custom_word_box_height / 4), 200, 30)
         custom_word_box_rect = pygame.Rect(self.right_x - (custom_word_box_width*1.3), (self.bottom_y / 2) - (custom_word_box_height / 4), custom_word_box_width, custom_word_box_height)
-        custom_word_box_list = ["Only enter 1 word at a time", "Please enter your custom words below", "Once you have ensured the spelling is", "correct, hit enter and they will", "appear on the left"]
+        custom_word_box_list = ["Only enter 1 word at a time (8 Max)", "Please enter your custom words below", "Once you have ensured the spelling is", "correct, hit enter and they will", "appear on the left", "Hit the reset button to remove them"]
         ui.draw_multiline_text_box(self.screen, custom_word_box_rect, "Enter a Custom Word", custom_word_box_list, self.lives_font, self.chat_font)
         ui.draw_input_box(self.screen, custom_word_input_box_rect, self.custom_word_input_text, self.input_font)
 
         # Draw Custom Words Entered Box
         if self.custom_words_list and len(self.custom_words_list) <= 8:
-            self.words_entered_list = []
+            self.words_entered_dict = {}
             for i in range(len(self.custom_words_list)):
-                self.words_entered_list.append(self.custom_words_list[i])
-        ui.draw_multiline_text_box(self.screen, self.words_entered_box_rect, "Current Words Entered", self.words_entered_list, self.lives_font, self.chat_font)
+                diff = word_difficulty.evaluate_word_difficulty(self.custom_words_list[i])
+                self.words_entered_dict[self.custom_words_list[i]] = diff
+        ui.draw_multiline_text_box(self.screen, self.words_entered_box_rect, "Current Words Entered", self.words_entered_dict, self.lives_font, self.chat_font)
 
         # Draw Stats Reset Button
         button_hover_words_entered_reset = self.words_entered_reset_button_rect.collidepoint(pygame.mouse.get_pos())

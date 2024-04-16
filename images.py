@@ -30,7 +30,7 @@ class Images:
             scaled_theme = pygame.transform.scale(theme_image, (ui.SCREEN_WIDTH, ui.SCREEN_HEIGHT))
             self.themes[i] = scaled_theme
 
-        if current_month == 3: # Easter
+        if current_month == 3 or current_month == 4: # Easter
             self.current_theme = self.themes[2]
         elif current_month == 10: # Halloween
             self.current_theme = self.themes[4]

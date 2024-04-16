@@ -92,8 +92,16 @@ def draw_multiline_text_box(screen, rect, header, data_list, font_h, font):
 
     # Render and draw each line of data below the header
     y = header_rect.bottom + 10
-    for data in data_list:
-        data_surface = font.render(data, True, BLACK)
-        data_rect = data_surface.get_rect(midtop=(rect.centerx, y + 20))
-        screen.blit(data_surface, data_rect)
-        y += line_height + 5  # Add a small gap between lines
+
+    if isinstance(data_list, dict):
+        for key, value in data_list.items():
+            data_surface = font.render(f"{key}: {value}", True, BLACK)
+            data_rect = data_surface.get_rect(midtop=(rect.centerx, y + 20))
+            screen.blit(data_surface, data_rect)
+            y += line_height + 5  # Add a small gap between lines
+    elif isinstance(data_list, list):
+        for data in data_list:
+            data_surface = font.render(data, True, BLACK)
+            data_rect = data_surface.get_rect(midtop=(rect.centerx, y + 20))
+            screen.blit(data_surface, data_rect)
+            y += line_height + 5  # Add a small gap between lines

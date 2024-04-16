@@ -95,7 +95,7 @@ class WordDifficulty:
             if value_base:
                 sum_eval = max(sum_eval, value_base) if sum_eval else value_base
         if sum_eval is None:
-            return "unclassified"
+            return "Med" # Generally in the middle
         if sum_eval < 30: # Can be adjusted - 0 is hardest limit (20)
             return "Hard"
         if sum_eval < 120: # (110)

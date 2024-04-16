@@ -7,7 +7,7 @@ import sys
 import time
 from images import Images
 from timer import Timer
-from storage import save_data, load_data, del_custom_words
+from storage import save_data
 
 pygame.init()
 
@@ -36,7 +36,7 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 save_data(user_name, game.score, word_streak)
-                del_custom_words(screens.file_path, screens.words_entered_list)
+                #del_custom_words(screens.file_path, screens.words_entered_list)
                 screens.running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:

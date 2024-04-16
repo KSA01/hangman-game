@@ -6,24 +6,40 @@ def load_file(file_path):
         words = file.read().splitlines()
     return words
 
-counter = 0
+def add_custom_words(file_path, words_list): # Adds the custom words to the game's word list
+    with open(file_path, 'r+') as file:
+        #file.write('\n')
+        lines = file.readlines()
+        for word in words_list:
+            if word.strip() not in lines:
+                file.write('\n' + word.strip())
 
-def add_custom_words(file_path, words_list):
-    global counter
-    if counter == 0:
-        with open(file_path, 'r+') as file:
-            file.write('\n')
-            lines = file.readlines()
-            for word in words_list:
-                if word.strip() not in lines:
-                    file.write(word.strip() + '\n')
-                    counter += 1
-    else:
-        print("Error: Counter not zero")
+        # Removes empty line at the end
+        '''file.seek(0, 2)  # Move to the end of the file
+        pos = file.tell() - 1  # Start at the end of the file
+        while pos > 0 and file.read(1) != "\n":  # Move backwards until a newline is found
+            pos -= 1
+            file.seek(pos, 0)
+        if pos > 0:
+            file.seek(pos, 0)
+            file.truncate()'''
 
-def del_custom_words(file_path, words_list):
-    global counter
-    if counter != 0:
+    with open("data/addedwords.json", "w") as json_file:
+        json.dump(words_list, json_file, indent=4)
+
+def get_custom_words(): # Retrieves the custom words added for game initialize
+    try:
+        with open("data/addedwords.json", "r") as json_file:
+            try:
+                data = json.load(json_file)
+                return data
+            except json.JSONDecodeError:
+                return None
+    except FileNotFoundError:
+        return None
+
+def del_custom_words(file_path, words_list): # Removes the custom words from the words list
+    if words_list:
         with open(file_path, 'r+') as file:
             lines = file.readlines()
             file.seek(0)  # Moves the file pointer to the beginning
@@ -31,7 +47,8 @@ def del_custom_words(file_path, words_list):
                 if line.strip() not in words_list:
                     file.write(line)  # Write the line back to the file if it's not in the list
             file.truncate()  # Truncate the file to remove any remaining content after the updated lines
-            # Removed empty line at the end
+
+            # Removes empty line at the end
             file.seek(0, 2)  # Move to the end of the file
             pos = file.tell() - 1  # Start at the end of the file
             while pos > 0 and file.read(1) != "\n":  # Move backwards until a newline is found
@@ -40,7 +57,10 @@ def del_custom_words(file_path, words_list):
             if pos > 0:
                 file.seek(pos, 0)
                 file.truncate()
-        counter = 0
+        
+        words_list = {}
+        with open("data/addedwords.json", "w") as json_file:
+            json.dump(words_list, json_file, indent=4)
 
 def save_data(user, score, streak, reset=False):
     if not reset:
