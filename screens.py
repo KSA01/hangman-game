@@ -27,6 +27,7 @@ class Screens:
         self.themes = False
         self.custom_words = False
         self.player_won = False
+        self.confirmed_words = False
 
         self.button_font = pygame.font.Font(None, 30)
         self.input_font = pygame.font.Font(None, 30)
@@ -44,6 +45,7 @@ class Screens:
         self.custom_words_list = []
         added_words = get_custom_words()
         if added_words:
+            self.confirmed_words = True
             for word in added_words:
                 self.custom_words_list.append(word)
         self.words_entered_dict = {}
@@ -265,10 +267,13 @@ class Screens:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if self.words_entered_reset_button_rect.collidepoint(event.pos):
-                    del_custom_words(self.file_path, self.words_entered_dict)
-                    self.words_entered_dict = []
+                    if self.confirmed_words:
+                        del_custom_words(self.file_path, self.words_entered_dict)
+                        self.confirmed_words = False
+                    self.words_entered_dict = {}
                     self.custom_words_list = []
                 elif self.words_entered_dict and self.words_confirm_rect.collidepoint(event.pos):
+                    self.confirmed_words = True
                     add_custom_words(self.file_path, self.words_entered_dict)
                     time.sleep(0.1)
                     self.custom_words = False
