@@ -158,14 +158,6 @@ class Screens:
                 elif self.button_rect_no.collidepoint(event.pos):
                     self.quit_screen = False
                     return
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN and not self.start_game: # Enter key
-                    save_data(user_name, game.score, word_streak)
-                    self.running = False
-                    return
-                elif event.key == pygame.K_ESCAPE and not self.start_game: # Escape key
-                    self.quit_screen = False
-                    return
 
     def rulesScreen(self):
         # Draw Start Screen Title

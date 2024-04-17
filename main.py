@@ -70,26 +70,59 @@ def main():
                         screens.quit_screen = True
                             
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE and not screens.start_game:
-                    # Are you sure you want to quit?
-                    screens.quit_screen = True
-                elif event.key == pygame.K_ESCAPE and screens.start_game:
-                    # Are you sure you want to goto menu?
-                    screens.ensurance = True
+                # Escape key
+                if event.key == pygame.K_ESCAPE:
+                    if not screens.start_game and not screens.quit_screen and not screens.mode_select and not screens.replay_menu:
+                        # Are you sure you want to quit?
+                        screens.quit_screen = True
+                    elif screens.start_game and not screens.ensurance and not screens.replay_menu:
+                        # Are you sure you want to goto menu?
+                        screens.ensurance = True
+                    # Keybindings for quit screen
+                    elif screens.quit_screen and not screens.start_game:
+                        screens.quit_screen = False
+                    # Keybindings for quit to home screen
+                    elif screens.ensurance and screens.start_game:
+                        screens.ensurance = False
+                    # Replay screen keybinds
+                    elif screens.replay_menu:
+                        screens.start_game = False
+                        screens.new_game = True
+                        screens.replay_menu = False
+                        game.score = 0
+                # Backspace key
                 elif event.key == pygame.K_BACKSPACE:
                     name_input_text = name_input_text[:-1]
+                # Enter key
                 elif event.key == pygame.K_RETURN:
                     # Process user input
                     if name_input_text:
                         name_input_text = name_input_text.rstrip('\r')  # Strip out carriage return character
                         user_name = name_input_text
                         name_input_text = ""
-                elif screens.start_game:
-                    input_text += event.unicode
-                elif screens.custom_words:
-                    screens.custom_word_input_text += event.unicode
-                else:
-                    name_input_text += event.unicode
+                    # Keybindings for quit screen
+                    elif screens.quit_screen and not screens.start_game:
+                        save_data(user_name, game.score, word_streak)
+                        screens.running = False
+                    # Keybindings for quit to home screen
+                    elif screens.ensurance and screens.start_game:
+                        save_data(user_name, game.score, word_streak)
+                        screens.start_game = False
+                        screens.mode_select = False
+                    # Replay screen keybinds
+                    elif screens.replay_menu:
+                        screens.start_game = False
+                        screens.new_game = True
+                        screens.mode_select = True
+                        screens.replay_menu = False
+                else: # For adding leters to input boxes
+                    if not event.key == pygame.K_ESCAPE:
+                        if screens.start_game:
+                            input_text += event.unicode
+                        elif screens.custom_words:
+                            screens.custom_word_input_text += event.unicode
+                        else:
+                            name_input_text += event.unicode
 
 
         screen.blit(images.lobby_background, (0, 0))
@@ -167,14 +200,6 @@ def main():
                         elif screens.button_rect_dont.collidepoint(event.pos): # No continue game
                             screens.ensurance = False
                             continue
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN: # Enter key (Y)
-                        save_data(user_name, game.score, word_streak)
-                        screens.start_game = False
-                        screens.mode_select = False
-                    elif event.key == pygame.K_ESCAPE: # Escape key (N)
-                        screens.ensurance = False
-                        continue
 
             if screens.new_game:
                 lives, display = game.hangman(lives, screens.new_game, "", mode)
@@ -193,8 +218,6 @@ def main():
                         input_text = input_text.rstrip('\r')  # Strip out carriage return character
                         lives, display = game.hangman(lives, screens.new_game, input_text, mode)
                         input_text = ""
-                else:
-                    input_text += event.unicode
 
             # Check if the game is over
             if lives == 0 or lives == "win" or timer.has_expired():
