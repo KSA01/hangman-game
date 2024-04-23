@@ -72,12 +72,16 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 # Escape key
                 if event.key == pygame.K_ESCAPE:
-                    if not screens.start_game and not screens.quit_screen and not screens.mode_select and not screens.replay_menu:
+                    if not screens.start_game and not screens.quit_screen and not screens.mode_select and not screens.replay_menu and not screens.display_rules and not screens.themes and not screens.custom_words:
                         # Are you sure you want to quit?
                         screens.quit_screen = True
                     elif screens.start_game and not screens.ensurance and not screens.replay_menu:
                         # Are you sure you want to goto menu?
                         screens.ensurance = True
+                    elif screens.display_rules or screens.themes or screens.custom_words:
+                        screens.display_rules = False
+                        screens.themes = False
+                        screens.custom_words = False
                     # Keybindings for quit screen
                     elif screens.quit_screen and not screens.start_game:
                         screens.quit_screen = False

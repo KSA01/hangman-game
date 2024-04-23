@@ -65,8 +65,8 @@ class Screens:
         self.custom_words_button_rect = pygame.Rect(self.center_x - (150 // 2), self.center_y + 160, 150, 50)
         self.welc_title_rect = pygame.Rect((self.center_x) - (1000 // 2), (self.bottom_y / 50), 1000, 130)
         
-        self.stats_box_rect = pygame.Rect(self.right_x / 16, (self.bottom_y / 2) - (self.stats_height / 4), self.stats_width, self.stats_height)
-        self.stats_reset_button_rect = pygame.Rect(self.right_x / 16 + 100, self.bottom_y - (self.stats_height), 130, 30)
+        self.stats_box_rect = pygame.Rect(100, (self.bottom_y / 2) - (self.stats_height / 4), self.stats_width, self.stats_height)
+        self.stats_reset_button_rect = pygame.Rect(100 + (self.right_x / 13), self.bottom_y - (self.stats_height), 130, 30)
         
         self.quit_rect = pygame.Rect((self.center_x) - (600 // 2), (self.bottom_y / 100), 600, 130)
         self.button_rect_yes = pygame.Rect(self.center_x - 120, self.center_y - (50 // 2), 100, 50)
@@ -89,8 +89,8 @@ class Screens:
         self.button_rect_cont = pygame.Rect(self.center_x - 120, self.center_y - (50 // 2), 100, 50)
         self.button_rect_dont = pygame.Rect(self.center_x + 20, self.center_y - (50 // 2), 100, 50)
 
-        self.words_entered_box_rect = pygame.Rect(self.right_x / 16, (self.bottom_y / 2) - (self.stats_height / 4), self.stats_width, self.stats_height)
-        self.words_entered_reset_button_rect = pygame.Rect(self.right_x / 16 + 100, self.bottom_y - (self.stats_height) + 10, 130, 30)
+        self.words_entered_box_rect = pygame.Rect(100, (self.bottom_y / 2) - (self.stats_height / 4), self.stats_width, self.stats_height)
+        self.words_entered_reset_button_rect = pygame.Rect(100 + (self.right_x / 13), self.bottom_y - (self.stats_height) + 20, 130, 30)
         self.words_confirm_rect = pygame.Rect(self.center_x - (150 // 2), self.center_y + 100, 150, 50)
 
     def homeScreen(self, user_name, name_input_text):
@@ -120,8 +120,8 @@ class Screens:
         # Draw User Name Entry Box
         name_box_width = self.right_x / 4
         name_box_height = self.bottom_y / 3
-        name_input_box_rect = pygame.Rect(self.right_x - (name_box_width + 10), (self.bottom_y*2/3 + 20) - (name_box_height / 4), 150, 30)
-        name_box_rect = pygame.Rect(self.right_x - (name_box_width*1.3), (self.bottom_y / 2) - (name_box_height / 4), name_box_width, name_box_height)
+        name_input_box_rect = pygame.Rect(self.right_x - (name_box_width + 100) + (self.right_x / 13), (self.bottom_y*2/3 + 20) - (name_box_height / 4), 150, 30)
+        name_box_rect = pygame.Rect(self.right_x - (name_box_width + 100), (self.bottom_y / 2) - (name_box_height / 4), name_box_width, name_box_height)
         name_box_list = ["", "Current User Name is: ", f"{user_name}", "", "Enter a User Name Below"]
         ui.draw_multiline_text_box(self.screen, name_box_rect, "User Name", name_box_list, self.lives_font, self.chat_font)
         ui.draw_input_box(self.screen, name_input_box_rect, name_input_text, self.input_font)
@@ -276,8 +276,8 @@ class Screens:
         # Draw Custom Words Entry Box
         custom_word_box_width = self.right_x / 4
         custom_word_box_height = self.bottom_y / 3
-        custom_word_input_box_rect = pygame.Rect(self.right_x - (custom_word_box_width + 30), (self.bottom_y*2/3 + 60) - (custom_word_box_height / 4), 200, 30)
-        custom_word_box_rect = pygame.Rect(self.right_x - (custom_word_box_width*1.3), (self.bottom_y / 2) - (custom_word_box_height / 4), custom_word_box_width, custom_word_box_height)
+        custom_word_input_box_rect = pygame.Rect(self.right_x - (custom_word_box_width + 100) + (self.right_x / 17), (self.bottom_y*2/3 + 60) - (custom_word_box_height / 4), 200, 30)
+        custom_word_box_rect = pygame.Rect(self.right_x - (custom_word_box_width + 100), (self.bottom_y / 2) - (custom_word_box_height / 4), custom_word_box_width, custom_word_box_height)
         custom_word_box_list = ["Only enter 1 word at a time (8 Max)", "Please enter your custom words below", "Once you have ensured the spelling is", "correct, hit enter and they will", "appear on the left", "Hit the reset button to remove them"]
         ui.draw_multiline_text_box(self.screen, custom_word_box_rect, "Enter a Custom Word", custom_word_box_list, self.lives_font, self.chat_font)
         ui.draw_input_box(self.screen, custom_word_input_box_rect, self.custom_word_input_text, self.input_font)
