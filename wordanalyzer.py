@@ -5,6 +5,7 @@ from nltk.stem import WordNetLemmatizer
 from nltk.probability import FreqDist
 from textblob import Word as TextWord
 import pickle
+import fickling
 
 class WordDifficulty:
     """Estimate the difficulty level of a given English word.
@@ -26,7 +27,7 @@ class WordDifficulty:
     def load_cached_resources(self):
         try:
             with open('nltk_resources.pkl', 'rb') as f:
-                cached_data = pickle.load(f)
+                cached_data = fickling.load(f)
                 self.stopwords = cached_data['stopwords']
                 self.words = cached_data['words']
                 self.names = cached_data['names']
