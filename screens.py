@@ -54,6 +54,7 @@ class Screens:
 
         self.input_box_rect = pygame.Rect((self.center_x - 300), (self.bottom_y * (5/6)), 100, 30)
         self.title_rect = pygame.Rect((self.center_x) - (600 // 2), (self.bottom_y / 50), 600, 130)
+        self.game_title_rect = pygame.Rect((self.center_x) - (400 // 2), (self.bottom_y / 50), 400, 130)
         self.menu_rect = pygame.Rect(20, 20, 100, 100)
         self.quit_but_rect = pygame.Rect(self.right_x - 120, 20, 100, 100)
         self.text_box_rect = pygame.Rect(self.center_x - (420 // 2), self.bottom_y - 50, 400, 50)
@@ -333,7 +334,7 @@ class Screens:
         
         # Draw title
         if not self.ensurance:
-            ui.draw_text_box(self.screen, self.title_rect, "H A N G M A N", self.title_font)
+            ui.draw_text_box(self.screen, self.game_title_rect, mode, self.title_font)
 
         # Draw the text box for the word to guess
         ui.draw_text_box(self.screen, self.text_box_rect, display, self.guess_font)

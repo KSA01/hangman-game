@@ -44,7 +44,7 @@ def main():
                         #Starts Game
                         screens.mode_select = True
                         time.sleep(0.1)
-                    elif not screens.start_game and not screens.quit_screen and not screens.mode_select and screens.stats_reset_button_rect.collidepoint(event.pos):
+                    elif not screens.start_game and not screens.quit_screen and not screens.mode_select and not screens.custom_words and screens.stats_reset_button_rect.collidepoint(event.pos):
                         save_data(user_name, 0, 0, reset=True)
                     elif screens.menu_rect.collidepoint(event.pos):
                         #Goes back to main menu
@@ -128,8 +128,8 @@ def main():
                         else:
                             name_input_text += event.unicode
 
-
-        screen.blit(images.lobby_background, (0, 0))
+        if not screens.replay_menu:
+            screen.blit(images.lobby_background, (0, 0))
 
         # Draw Home Screen
         if not screens.start_game and not screens.mode_select and not screens.quit_screen and not screens.display_rules and not screens.themes and not screens.custom_words:
@@ -176,7 +176,7 @@ def main():
                         screens.mode_select = False
                         screens.ensurance = False
                         lives = 7
-                        mode = "Med"
+                        mode = "Medium"
                         timer.TIMER_DURATION = 45
                     elif screens.rect_hard.collidepoint(event.pos):
                         screens.start_game = True
@@ -206,6 +206,7 @@ def main():
                             continue
 
             if screens.new_game:
+                input_text = ""
                 lives, display = game.hangman(lives, screens.new_game, "", mode)
                 word_box_width = len(display) * 10 + 80
                 screens.text_box_rect = pygame.Rect(screens.center_x - (word_box_width // 2), screens.bottom_y - 50, word_box_width, 50)
@@ -228,7 +229,7 @@ def main():
                 if lives == "win":
                     screens.player_won = True
                     word_streak += 1
-                    if mode == "Med" or mode == "Hard":
+                    if mode == "Medium" or mode == "Hard":
                         lives = 7
                     elif mode == "Easy":
                         lives = 10
@@ -248,7 +249,7 @@ def main():
                 ui.draw_text_box(screen, screens.text_box_rect, display, screens.guess_font)
                 ui.draw_chat(screen, ui.text_list, screens.chat_font)
                 pygame.display.flip()
-                time.sleep(4)
+                time.sleep(2)
 
                 save_data(user_name, game.score, word_streak)
 

@@ -82,7 +82,7 @@ def hangman(lives, new_game, user_input, mode):
             ui.text_list = ["Congratulations! You guessed the word:", f"{str(word_to_guess)}"]
             if mode == "Easy":
                 score += (1*lives)
-            elif mode == "Med":
+            elif mode == "Medium":
                 print(lives)
                 score += (2*lives)
             else:
@@ -123,7 +123,7 @@ def draw_hangman(screen, lives, mode, background):
 
     if lives == 0:
         life_count = 10
-    elif mode == "Med" or mode == "Hard":
+    elif mode == "Medium" or mode == "Hard":
         life_count = 7
     elif mode == "Easy":
         life_count = 10

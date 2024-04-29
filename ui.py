@@ -10,8 +10,8 @@ text_list = []
 # Time in seconds before removing elements from the list
 REMOVE_DELAY = 3
 
-SCREEN_WIDTH = info.current_w - 120 #1200
-SCREEN_HEIGHT = info.current_h - 150 #800
+SCREEN_WIDTH = info.current_w #- 120
+SCREEN_HEIGHT = info.current_h #- 150
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 CREAM = (255, 253, 208)
