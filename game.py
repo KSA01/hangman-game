@@ -1,9 +1,9 @@
 
 import pygame
-import random
 import ui
 from storage import load_file
 from wordanalyzer import WordDifficulty
+import secrets
 
 center_x = ui.SCREEN_WIDTH // 2
 center_y = ui.SCREEN_HEIGHT // 2
@@ -25,7 +25,7 @@ def choose_word(file_path):
     words = load_file(file_path)
     selected_word = ""
     while len(selected_word) < 1: # Checks to make sure chosen word is greater than 1
-        selected_word = random.choice(words)
+        selected_word = secrets.choice(words)
         selected_word = selected_word.replace(" ", "-")
     return selected_word
 
